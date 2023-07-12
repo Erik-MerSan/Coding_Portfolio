@@ -20,7 +20,7 @@ new_pre_adj <- new_pre_adj |>
          Age_at_Crime = as.numeric(Age_at_Crime))
 
 # create the month, day, and year variables for offense, arrest, and first_arraign
-# if it is not outputting the results you want, try running without "suppressWarnings()" first, then rerun with "suppressWarnings()"
+# If it is not outputting the results you want, try running without "suppressWarnings()" first, then rerun with "suppressWarnings()"
 new_pre_adj <- new_pre_adj |>
   separate(Arrest_Date, into = c("Arrest_Month", "Arrest_Day", "Arrest_Year"), sep = "/")
 new_pre_adj <- new_pre_adj |>  
@@ -35,6 +35,7 @@ new_pre_adj <- new_pre_adj |>
   suppressWarnings(separate(First_Arraign_Date, into = c("First_Arraign_Month", "First_Arraign_Day", "First_Arraign_Year"), sep = "/"))
 
 # create arraign type indicators         
+# These indicators are meant to show the type of crime that was committed
 new_pre_adj <- new_pre_adj |>          
   mutate(obstruction_indctr = ifelse(Arraign.Charge.Category == "Obstruction", 1, 0),
          rape_indctr = ifelse(Arraign.Charge.Category == "Rape", 1, 0),
@@ -58,7 +59,8 @@ new_pre_adj <- new_pre_adj |>
          dwi_indctr = ifelse(Arraign.Charge.Category == "DWI", 1, 0),
          conspiracy_indctr = ifelse(Arraign.Charge.Category == "Conspiracy", 1, 0))
 
-# create race indicators        
+# create race indicators  
+# these indicators are meant to show the race of the individual
 new_pre_adj <- new_pre_adj |>          
   mutate(wht_indctr = ifelse(Race == "White", 1, 0), 
          blk_indctr = ifelse(Race == "Black", 1, 0),
@@ -67,13 +69,14 @@ new_pre_adj <- new_pre_adj |>
          other_race_indctr = ifelse(Race == "Other", 1, 0), 
          unkwn_race_idctr = ifelse(Race == "Unkown", 1, 0))
 
-# create gender indicators         
+# create gender indicators     
+# these indicators are meant to show the gender of the individual
 new_pre_adj <- new_pre_adj |>          
   mutate(female_indctr = ifelse(Gender == "Female", 1, 0), 
          male_indctr = ifelse(Gender == "Male", 1,  0),
          unkwn_gndr_indctr = ifelse(Gender == "Unkown", 1, 0))
 
-#create the unique judge ids
+# create the unique judge ids
 judge_factor <- factor(new_pre_adj$Judge_Name)
 judege_levels <- levels(judge_factor)
 judge_id <- as.integer(judge_factor)
@@ -82,7 +85,7 @@ judge_id <- as.integer(judge_factor)
 new_pre_adj <- new_pre_adj |>
   mutate(judge_id = judge_id)
 
-# create and add judge release rates a dataset
+# create and add judge release rates to a dataset
 release_rates <- pretrial_adjust |>
   filter(!Arrest_Type %in% "DAT") |>
   filter(!Release.Decision.at.Arraign %in% "Disposed at arraign") |>
